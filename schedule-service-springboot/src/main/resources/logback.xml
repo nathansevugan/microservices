@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE logback>
+<configuration>
+
+	<include resource="logback-appenders.xml" />
+
+	<logger name="org.springframework.data.mongodb.core" level="debug"
+			additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
+
+
+	<root>
+		<level value="INFO" />
+		<appender-ref ref="STDOUT" />
+		<!--<appender-ref ref="FLUENT_ASYNC" />-->
+	</root>
+
+</configuration>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE logback>
+<included>
+
+    <appender name="FLUENT_TEXT_SYNC"
+              class="ch.qos.logback.more.appenders.FluentLogbackAppender">
+        <!-- Tag for Fluentd. Farther information: http://docs.fluentd.org/articles/config-file -->
+        <tag>app</tag>
+        <!-- [Optional] Label for Fluentd. Farther information: http://docs.fluentd.org/articles/config-file -->
+        <label>follow</label>
+        <!-- Host name/address and port number which Flentd placed -->
+        <remoteHost>localhost</remoteHost>
+        <port>24224</port>
+
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern><![CDATA[%date{HH:mm:ss.SSS} [%thread] %-5level %logger{15}#%line %msg]]></pattern>
+        </layout>
+    </appender>
+
+
+    <appender name="FLUENT_SYNC"
+              class="ch.qos.logback.more.appenders.DataFluentAppender">
+
+        <!-- Tag for Fluentd. Farther information: http://docs.fluentd.org/articles/config-file -->
+        <tag>app</tag>
+        <!-- [Optional] Label for Fluentd. Farther information: http://docs.fluentd.org/articles/config-file -->
+        <label>follow</label>
+        <!-- Host name/address and port number which Flentd placed -->
+        <remoteHost>localhost</remoteHost>
+        <port>24224</port>
+        <!-- Additional fields(Pairs of key: value) -->
+     <!--   <additionalField>
+            <key>app</key>
+            <value>follow</value>
+        </additionalField>
+        <additionalField>
+            <key>foo2</key>
+            <value>bar2</value>
+        </additionalField>-->
+    </appender>
+
+    <appender name="FLUENT_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- Max queue size of logs which is waiting to be sent (When it reach to the max size, the log will be disappeared). -->
+        <queueSize>1000</queueSize>
+        <appender-ref ref="FLUENT_SYNC"/>
+    </appender>
+
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                <![CDATA[%date{HH:mm:ss.SSS} [%thread] %-5level %logger{15}#%line %X{req.requestURI} %msg\n]]></pattern>
+        </encoder>
+    </appender>
+
+</included>
