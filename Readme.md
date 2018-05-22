@@ -63,7 +63,10 @@ Download sep/elk image from docker hub
 ## data contract V1
 ```json
 {
-    "id" : "351937",
+    "_id" :{
+        "leg_id" : 351937,
+        "version" : 0
+     },
     "flightLegId" : {
         "flightNumber":"123A",
         "departureAirport":"DFW",
@@ -87,8 +90,11 @@ Download sep/elk image from docker hub
 <pre>
 ```json
 {
-    "id" : "351937",
-    "flightLegId" : {
+    "_id" :{
+         "leg_id" : 351937,
+         "version" : 0
+      },
+     "flightLegId" : {
         "flightNumber":"123A",
         "departureAirport":"DFW",
         "arrivalAirport": "MSP",
@@ -115,8 +121,11 @@ Download sep/elk image from docker hub
 <pre>
 ```
 {
-    "id" : "351937",
-    "flightLegId" : {
+    "_id" :{
+          "leg_id" : 351937,
+          "version" : 0
+     },
+     "flightLegId" : {
         "flightNumber":"123A",
         "departureAirport":"DFW",
         "arrivalAirport": "MSP",
