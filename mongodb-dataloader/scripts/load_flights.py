@@ -31,7 +31,7 @@ def get_utc_datetime(date, time, utc_offset):
     return date + timedelta(minutes=time - utc_offset)
 
 
-def compose_leg(leg_id, flight_number):
+def compose_leg(leg_id, flight_number, version):
     # print('composing leg for id: ' + str(leg_id))
     index = randint(0, len(source) - 1 )
     depTz = source[index][0][1]
@@ -42,7 +42,10 @@ def compose_leg(leg_id, flight_number):
     zflightDate = datetime(2018, randint(today.month, 12), randint(1, 28), randint(0,23), 0, 0, 0, tzinfo=pytz.utc)
     zScheduleArrivalTime = zflightDate + timedelta(hours= source[index][2])
     leg = {
-        'id': leg_id,
+        '_id':{
+        'leg_id': leg_id,
+         'version' : version
+        },
         'flightLegId' : {
             'flightNumber': str(flight_number) ,
             'departureAirport' : source[index][0][0],
@@ -70,7 +73,7 @@ def load_legs(db, limit):
     legs = []
     total_legs_loaded = 0
     for index in range(1, limit + 1):
-        leg = compose_leg(leg_id=index, flight_number=index)
+        leg = compose_leg(leg_id=index, flight_number=index, version=1)
         legs.append(leg)
         if len(legs) % batch_size == 0:
             total_legs_loaded += len(legs)

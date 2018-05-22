@@ -22,10 +22,6 @@ public class FlightLegId {
 
     }
 
-    public static FlightLegIdBuilder newBuilder(){
-        return new FlightLegIdBuilder();
-    }
-
     public String getFlightNumber() {
         return flightNumber;
     }
@@ -47,7 +43,12 @@ public class FlightLegId {
     }
 
     public static class FlightLegIdBuilder{
+
         private FlightLegId flightLegId;
+
+        public static FlightLegIdBuilder newBuilder(){
+            return new FlightLegIdBuilder();
+        }
 
         FlightLegIdBuilder(){
             this.flightLegId = new FlightLegId();

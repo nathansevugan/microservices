@@ -1,8 +1,5 @@
 package com.sabre.as.schedule;
 
-import com.sabre.as.flight.schedule.service.ProtoFlightLegs;
-import com.sabre.as.flight.schedule.service.ProtoQueryByAirlineAndAirport;
-import com.sabre.as.flight.schedule.service.ScheduleServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
@@ -12,7 +9,8 @@ import io.grpc.ManagedChannelBuilder;
 public class ScheduleClient {
 
     public static void main(String[] args) {
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 9090)
+//        ManagedChannel channel = ManagedChannelBuilder.forAddress("scheduleservice-schedule-service.192.168.64.16.nip.io", 8080)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8080)
                 .usePlaintext()
                 .build();
 

@@ -28,49 +28,56 @@ public class ScheduleService extends ScheduleServiceGrpc.ScheduleServiceImplBase
     private FlightLegRepository flightLegRepository;
 
 
-   @Override
-   public void getFlightLegsByDepartureAirport(ProtoQueryByAirlineAndAirport request, StreamObserver<ProtoFlightLegs> responseObserver) {
-       logger.info("retrieving flights by airport code {} and airline code {}", request.getAirlineCode(), request.getAirportCode());
-       Collection<FlightLeg> flightLegByAirport = flightLegRepository.findFlightLegByAirlineAndAirport(request.getAirlineCode(), request.getAirportCode());
+    @Override
+    public void getFlightLegsByDepartureAirport(ProtoQueryByAirlineAndAirport request, StreamObserver<ProtoFlightLegs> responseObserver) {
+        logger.info("retrieving flights by airport code {} and airline code {}", request.getAirlineCode(), request.getAirportCode());
+        Collection<FlightLeg> flightLegByAirport = flightLegRepository.findFlightLegByAirlineAndAirport(request.getAirlineCode(), request.getAirportCode());
 
-       logger.info("number of flights retrieved by {} and  {} is {}", request.getAirlineCode(), request.getAirlineCode(), flightLegByAirport.size());
+        logger.info("number of flights retrieved by {} and  {} is {}", request.getAirlineCode(), request.getAirlineCode(), flightLegByAirport.size());
 
-       List<ProtoFlightLeg> flightLegs = flightLegByAirport.stream().map(flightLeg -> {
-           FlightLegId flightLegId = flightLeg.getFlightLegId();
-           DateTimeFormatter isoDateTimeFormatter = ISODateTimeFormat.dateTime();
-           ProtoFlightLegId protoFlightLegId = ProtoFlightLegId.newBuilder()
-                   .setFlightNumber(flightLegId.getFlightNumber())
-                   .setDepartureAirport(flightLegId.getDepartureAirport())
-                   .setArrivalAirport(flightLegId.getArrivalAirport())
-                   .setFlightDate(flightLegId.getFlightDate().toString(isoDateTimeFormatter))
-                   .setAirlineCode(flightLegId.getAirlineCode())
-                   .build();
+        List<ProtoFlightLeg> flightLegs = flightLegByAirport.stream().map(flightLeg -> {
+            FlightLegId flightLegId = flightLeg.getFlightLegId();
+            DateTimeFormatter isoDateTimeFormatter = ISODateTimeFormat.dateTime();
+            ProtoFlightLegId protoFlightLegId = ProtoFlightLegId.newBuilder()
+                    .setFlightNumber(flightLegId.getFlightNumber())
+                    .setDepartureAirport(flightLegId.getDepartureAirport())
+                    .setArrivalAirport(flightLegId.getArrivalAirport())
+                    .setFlightDate(flightLegId.getFlightDate().toString(isoDateTimeFormatter))
+                    .setAirlineCode(flightLegId.getAirlineCode())
+                    .build();
 
-           FlightTimes flightTimes = flightLeg.getFlightTimes();
+            FlightTimes flightTimes = flightLeg.getFlightTimes();
 
-           ProtoFlightTimes protoFlightTimes = ProtoFlightTimes.newBuilder()
-                   .setScheduleDepartureTime(flightTimes.getScheduleDepartureTime().toString(isoDateTimeFormatter))
-                   .setScheduleArrivalTime(flightTimes.getScheduleArrivalTime().toString(isoDateTimeFormatter))
-                   .setLatestDepartureTime(flightTimes.getLatestDepartureTime().toString(isoDateTimeFormatter))
-                   .setLatestArrivalTime(flightTimes.getLatestArrivalTime().toString(isoDateTimeFormatter)).build();
-
-
-           ProtoFlightLeg protoFlightLeg = ProtoFlightLeg.newBuilder()
-                   .setFlightLegId(protoFlightLegId)
-                   .setRegistration(flightLeg.getRegistration())
-                   .setServiceType(flightLeg.getServiceType())
-                   .setStatus(flightLeg.getStatus())
-                   .setFlightTimes(protoFlightTimes)
-                   .build();
-           return protoFlightLeg;
-       }).collect(toList());
+            ProtoFlightTimes protoFlightTimes = ProtoFlightTimes.newBuilder()
+                    .setScheduleDepartureTime(flightTimes.getScheduleDepartureTime().toString(isoDateTimeFormatter))
+                    .setScheduleArrivalTime(flightTimes.getScheduleArrivalTime().toString(isoDateTimeFormatter))
+                    .setLatestDepartureTime(flightTimes.getLatestDepartureTime().toString(isoDateTimeFormatter))
+                    .setLatestArrivalTime(flightTimes.getLatestArrivalTime().toString(isoDateTimeFormatter)).build();
 
 
-       responseObserver.onNext(ProtoFlightLegs.newBuilder().addAllFlightLegs(flightLegs).build());
-       responseObserver.onCompleted();
-   }
+            ProtoFlightLeg protoFlightLeg = ProtoFlightLeg.newBuilder()
+                    .setTechnicalId(ProtoTechnicalId.newBuilder().setId(flightLeg.getTechnicalId().getLegId()).
+                            setVersion(flightLeg.getTechnicalId().getVersion()).build())
+                    .setFlightLegId(protoFlightLegId)
+                    .setRegistration(flightLeg.getRegistration())
+                    .setServiceType(flightLeg.getServiceType())
+                    .setStatus(flightLeg.getStatus())
+                    .setFlightTimes(protoFlightTimes)
+                    .build();
+            return protoFlightLeg;
+        }).collect(toList());
 
-    public static void main(String[] args) {
 
+        responseObserver.onNext(ProtoFlightLegs.newBuilder().addAllFlightLegs(flightLegs).build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void updateFlightLeg(ProtoFlightLeg flightLeg,
+                                io.grpc.stub.StreamObserver<ProtoStatus> responseObserver) {
+//        FlightLeg
+
+        responseObserver.onNext(ProtoStatus.newBuilder().setStatus(true).build());
+        responseObserver.onCompleted();
     }
 }

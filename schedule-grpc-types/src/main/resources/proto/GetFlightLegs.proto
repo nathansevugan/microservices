@@ -2,6 +2,10 @@ syntax = "proto3";
 option java_multiple_files = true;
 package com.sabre.as.flight.schedule.service;
 
+message ProtoTechnicalId{
+    int64 id = 1;
+    int32 version = 2;
+}
 message ProtoFlightLegId{
     string flightNumber = 1;
     string departureAirport = 2;
@@ -18,11 +22,12 @@ message ProtoFlightTimes{
 }
 
 message ProtoFlightLeg{
-    ProtoFlightLegId flightLegId = 1;
-    ProtoFlightTimes flightTimes = 2;
-    string registration = 3;
-    string status = 4;
-    string serviceType = 5;
+    ProtoTechnicalId technicalId = 1;
+    ProtoFlightLegId flightLegId = 2;
+    ProtoFlightTimes flightTimes = 3;
+    string registration = 4;
+    string status = 5;
+    string serviceType = 6;
 }
 
 message ProtoFlightLegs{
@@ -33,6 +38,11 @@ message ProtoQueryByAirlineAndAirport{
     string airlineCode = 1;
     string airportCode = 2;
 }
+
+message ProtoStatus{
+    bool status = 1;
+}
 service ScheduleService{
     rpc getFlightLegsByDepartureAirport(ProtoQueryByAirlineAndAirport) returns (ProtoFlightLegs);
+    rpc updateFlightLeg(ProtoFlightLeg) returns (ProtoStatus);
 }
