@@ -48,7 +48,7 @@ public class ScheduleService extends ScheduleServiceGrpc.ScheduleServiceImplBase
         try{
             flightLegRepository.update(flightLeg);
         }catch (Exception e){
-            logger.error("Failed to update flight leg" + flightLeg.getId());
+            logger.error("Failed to update flight leg" + flightLeg.getLegId());
             success = false;
         }
 
@@ -57,9 +57,9 @@ public class ScheduleService extends ScheduleServiceGrpc.ScheduleServiceImplBase
     }
 
     @Override
-    public void getFlightLegById(com.sabre.as.flight.schedule.service.ProtoId protoId,
+    public void getFlightLegById(ProtoLegId protoLegId,
                               io.grpc.stub.StreamObserver<com.sabre.as.flight.schedule.service.ProtoFlightLeg> responseObserver) {
-        FlightLeg flightLeg = flightLegRepository.findFlightLegById(IdMapperFunction.map(protoId));
+        FlightLeg flightLeg = flightLegRepository.findFlightLegById(IdMapperFunction.map(protoLegId));
         responseObserver.onNext(ProtoFlightLegMapperFunction.map(flightLeg));
         responseObserver.onCompleted();
     }

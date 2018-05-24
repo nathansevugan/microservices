@@ -75,7 +75,7 @@
 
     <!--<repositories>
         <repository>
-            <id>Nexus</id>
+         legId <id>NexlegId</id>
             <name>Sabre Nexus Public Mirror</name>
             <url>http://maven.sabre.com/content/groups/all</url>
             <snapshots>
@@ -83,7 +83,7 @@
             </snapshots>
         </repository>
         <repository>
-            <id>central</id>
+         legId <id>centrlegId</id>
             <url>http://repo1.maven.org/maven2/</url>
         </repository>
     </repositories>-->

@@ -45,7 +45,7 @@ def compose_leg(leg_id, flight_number, version):
     zScheduleArrivalTime = zflightDate + timedelta(hours= source[index][2])
     leg = {
         '_id':{
-        'id': leg_id,
+        'legId': leg_id,
          'version' : version
         },
         'flightLegId' : {

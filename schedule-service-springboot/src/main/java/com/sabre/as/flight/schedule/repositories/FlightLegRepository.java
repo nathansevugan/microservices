@@ -1,7 +1,7 @@
 package com.sabre.as.flight.schedule.repositories;
 
 import com.sabre.as.flight.schedule.domain.FlightLeg;
-import com.sabre.as.flight.schedule.domain.Id;
+import com.sabre.as.flight.schedule.domain.LegId;
 import com.sabre.as.flight.schedule.domain.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,17 +35,17 @@ public class FlightLegRepository {
     public void update(FlightLeg leg) {
         Version version = versionRepository.addNewVersion("user update", "test");
         FlightLeg result = mongoTemplate.findAndModify(
-                query(where("_id.id").is(leg.getId().getId()).and("_id.version")
-                        .is(leg.getId().getVersion())),
+                query(where("_id.legId").is(leg.getLegId().getId()).and("_id.version")
+                        .is(leg.getLegId().getVersion())),
                 Update.update("shutdown_version", version.getId()),
                 options().returnNew(true),
                 FlightLeg.class);
 
         if (result == null) {
-            logger.error("Failed to shutdown version: " + leg.getId());
-            throw new DBException("Update failed, could not shutdown version: " + leg.getId());
+            logger.error("Failed to shutdown version: " + leg.getLegId());
+            throw new DBException("Update failed, could not shutdown version: " + leg.getLegId());
         }
-        leg.getId().setVersion(version.getId());
+        leg.getLegId().setVersion(version.getId());
         mongoTemplate.insert(leg);
     }
 
@@ -56,9 +56,9 @@ public class FlightLegRepository {
     }
 
 
-    public FlightLeg findFlightLegById(Id id) {
-        return mongoTemplate.findOne(Query.query(Criteria.where("_id.id").is(id.getId())
-                .and("_id.version").is(id.getVersion())), FlightLeg.class);
+    public FlightLeg findFlightLegById(LegId legId) {
+        return mongoTemplate.findOne(Query.query(Criteria.where("_id.legId").is(legId.getId())
+                .and("_id.version").is(legId.getVersion())), FlightLeg.class);
     }
 
 }

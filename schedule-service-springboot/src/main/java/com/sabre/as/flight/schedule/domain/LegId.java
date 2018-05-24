@@ -6,8 +6,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
  * Created by sg0501095 on 5/20/18.
  */
 
-public class Id {
-    @Field("id")
+public class LegId {
+    @Field("legId")
     private long id;
 
     @Field
@@ -32,31 +32,31 @@ public class Id {
 
     @Override
     public String toString() {
-        return "Id{" +
-                "id=" + id +
+        return "LegId{" +
+                "legId=" + id +
                 ", version=" + version +
                 '}';
     }
 
     public static class IdBuilder {
-        private final Id id;
+        private final LegId legId;
 
         public static IdBuilder newBuilder(){return new IdBuilder();}
         public IdBuilder(){
-            this.id = new Id();
+            this.legId = new LegId();
         }
 
-        public Id build(){
-            return this.id;
+        public LegId build(){
+            return this.legId;
         }
 
-        public IdBuilder setLegId(long legId){
-            this.id.id = legId;
+        public IdBuilder setId(long id){
+            this.legId.id = id;
             return this;
         }
 
         public IdBuilder setVersion(long version){
-            this.id.version = version;
+            this.legId.version = version;
             return this;
         }
 

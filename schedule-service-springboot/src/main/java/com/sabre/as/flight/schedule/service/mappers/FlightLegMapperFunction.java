@@ -35,7 +35,7 @@ public class FlightLegMapperFunction implements Function<ProtoFlightLeg, FlightL
                 .setFlightLegId(map(protoFlightLeg.getFlightLegId()))
                 .setServiceType(protoFlightLeg.getServiceType())
                 .setStatus(protoFlightLeg.getStatus())
-                .setId(IdMapperFunction.map(protoFlightLeg.getId()))
+                .setLegId(IdMapperFunction.map(protoFlightLeg.getLegId()))
         .setRegistration(protoFlightLeg.getRegistration())
         .setFlightTimes(map(protoFlightLeg.getFlightTimes())).build();
     }

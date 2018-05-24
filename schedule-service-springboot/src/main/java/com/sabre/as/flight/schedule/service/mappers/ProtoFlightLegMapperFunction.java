@@ -6,7 +6,7 @@ import com.sabre.as.flight.schedule.domain.FlightTimes;
 import com.sabre.as.flight.schedule.service.ProtoFlightLeg;
 import com.sabre.as.flight.schedule.service.ProtoFlightLegId;
 import com.sabre.as.flight.schedule.service.ProtoFlightTimes;
-import com.sabre.as.flight.schedule.service.ProtoId;
+import com.sabre.as.flight.schedule.service.ProtoLegId;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -40,8 +40,8 @@ public class ProtoFlightLegMapperFunction implements Function<FlightLeg, ProtoFl
     @Override
     public ProtoFlightLeg apply(FlightLeg flightLeg) {
         return ProtoFlightLeg.newBuilder()
-                .setId(ProtoId.newBuilder().setId(flightLeg.getId().getId()).
-                        setVersion(flightLeg.getId().getVersion()).build())
+                .setLegId(ProtoLegId.newBuilder().setId(flightLeg.getLegId().getId()).
+                        setVersion(flightLeg.getLegId().getVersion()).build())
                 .setFlightLegId(map(flightLeg.getFlightLegId()))
                 .setRegistration(flightLeg.getRegistration())
                 .setServiceType(flightLeg.getServiceType())

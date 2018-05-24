@@ -45,7 +45,7 @@ public class ScheduleClient {
         ScheduleServiceGrpc.ScheduleServiceBlockingStub stub
                 = ScheduleServiceGrpc.newBlockingStub(channel);
 
-        ProtoFlightLeg flightLeg = stub.getFlightLegById(ProtoId.newBuilder().setId(1).setVersion(1).build());
+        ProtoFlightLeg flightLeg = stub.getFlightLegById(ProtoLegId.newBuilder().setId(1).setVersion(1).build());
         ProtoFlightLeg canceledFlightLeg = ProtoFlightLeg.newBuilder(flightLeg).setStatus("CNL").build();
         stub.updateFlightLeg(canceledFlightLeg);
     }
