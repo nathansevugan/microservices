@@ -1,12 +1,11 @@
 package com.sabre.as.flight.schedule.service;
 
 import com.sabre.as.flight.schedule.domain.FlightLeg;
-import com.sabre.as.flight.schedule.domain.FlightLegId;
-import com.sabre.as.flight.schedule.domain.FlightTimes;
 import com.sabre.as.flight.schedule.repositories.FlightLegRepository;
+import com.sabre.as.flight.schedule.service.mappers.FlightLegMapperFunction;
+import com.sabre.as.flight.schedule.service.mappers.IdMapperFunction;
+import com.sabre.as.flight.schedule.service.mappers.ProtoFlightLegMapperFunction;
 import io.grpc.stub.StreamObserver;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.lognet.springboot.grpc.GRpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,53 +30,38 @@ public class ScheduleService extends ScheduleServiceGrpc.ScheduleServiceImplBase
     @Override
     public void getFlightLegsByDepartureAirport(ProtoQueryByAirlineAndAirport request, StreamObserver<ProtoFlightLegs> responseObserver) {
         logger.info("retrieving flights by airport code {} and airline code {}", request.getAirlineCode(), request.getAirportCode());
-        Collection<FlightLeg> flightLegByAirport = flightLegRepository.findFlightLegByAirlineAndAirport(request.getAirlineCode(), request.getAirportCode());
+        Collection<FlightLeg> flightLegByAirport = flightLegRepository.findFlightLegsByAirlineAndAirport(request.getAirlineCode(), request.getAirportCode());
 
         logger.info("number of flights retrieved by {} and  {} is {}", request.getAirlineCode(), request.getAirlineCode(), flightLegByAirport.size());
 
-        List<ProtoFlightLeg> flightLegs = flightLegByAirport.stream().map(flightLeg -> {
-            FlightLegId flightLegId = flightLeg.getFlightLegId();
-            DateTimeFormatter isoDateTimeFormatter = ISODateTimeFormat.dateTime();
-            ProtoFlightLegId protoFlightLegId = ProtoFlightLegId.newBuilder()
-                    .setFlightNumber(flightLegId.getFlightNumber())
-                    .setDepartureAirport(flightLegId.getDepartureAirport())
-                    .setArrivalAirport(flightLegId.getArrivalAirport())
-                    .setFlightDate(flightLegId.getFlightDate().toString(isoDateTimeFormatter))
-                    .setAirlineCode(flightLegId.getAirlineCode())
-                    .build();
-
-            FlightTimes flightTimes = flightLeg.getFlightTimes();
-
-            ProtoFlightTimes protoFlightTimes = ProtoFlightTimes.newBuilder()
-                    .setScheduleDepartureTime(flightTimes.getScheduleDepartureTime().toString(isoDateTimeFormatter))
-                    .setScheduleArrivalTime(flightTimes.getScheduleArrivalTime().toString(isoDateTimeFormatter))
-                    .setLatestDepartureTime(flightTimes.getLatestDepartureTime().toString(isoDateTimeFormatter))
-                    .setLatestArrivalTime(flightTimes.getLatestArrivalTime().toString(isoDateTimeFormatter)).build();
-
-
-            ProtoFlightLeg protoFlightLeg = ProtoFlightLeg.newBuilder()
-                    .setTechnicalId(ProtoTechnicalId.newBuilder().setId(flightLeg.getTechnicalId().getLegId()).
-                            setVersion(flightLeg.getTechnicalId().getVersion()).build())
-                    .setFlightLegId(protoFlightLegId)
-                    .setRegistration(flightLeg.getRegistration())
-                    .setServiceType(flightLeg.getServiceType())
-                    .setStatus(flightLeg.getStatus())
-                    .setFlightTimes(protoFlightTimes)
-                    .build();
-            return protoFlightLeg;
-        }).collect(toList());
-
-
+        List<ProtoFlightLeg> flightLegs = flightLegByAirport.stream()
+                .map(flightLeg -> ProtoFlightLegMapperFunction.map(flightLeg)).collect(toList());
         responseObserver.onNext(ProtoFlightLegs.newBuilder().addAllFlightLegs(flightLegs).build());
         responseObserver.onCompleted();
     }
 
     @Override
-    public void updateFlightLeg(ProtoFlightLeg flightLeg,
+    public void updateFlightLeg(ProtoFlightLeg protoFlightLeg,
                                 io.grpc.stub.StreamObserver<ProtoStatus> responseObserver) {
-//        FlightLeg
+        FlightLeg flightLeg = new FlightLegMapperFunction().apply(protoFlightLeg);
+        boolean success = true;
+        try{
+            flightLegRepository.update(flightLeg);
+        }catch (Exception e){
+            logger.error("Failed to update flight leg" + flightLeg.getId());
+            success = false;
+        }
 
-        responseObserver.onNext(ProtoStatus.newBuilder().setStatus(true).build());
+        responseObserver.onNext(ProtoStatus.newBuilder().setStatus(success).build());
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void getFlightLegById(com.sabre.as.flight.schedule.service.ProtoId protoId,
+                              io.grpc.stub.StreamObserver<com.sabre.as.flight.schedule.service.ProtoFlightLeg> responseObserver) {
+        FlightLeg flightLeg = flightLegRepository.findFlightLegById(IdMapperFunction.map(protoId));
+        responseObserver.onNext(ProtoFlightLegMapperFunction.map(flightLeg));
+        responseObserver.onCompleted();
+    }
+
 }

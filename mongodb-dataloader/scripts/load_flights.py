@@ -2,6 +2,8 @@
 
 from random import randint
 from pymongo import MongoClient, ASCENDING
+from pymongo import ReturnDocument
+
 from datetime import datetime, timedelta
 import pytz
 
@@ -43,7 +45,7 @@ def compose_leg(leg_id, flight_number, version):
     zScheduleArrivalTime = zflightDate + timedelta(hours= source[index][2])
     leg = {
         '_id':{
-        'leg_id': leg_id,
+        'id': leg_id,
          'version' : version
         },
         'flightLegId' : {
@@ -68,22 +70,47 @@ def compose_leg(leg_id, flight_number, version):
 
 
 
-def load_legs(db, limit):
+def load_legs(db, limit, version):
     print('creating and inserting legs in batches of: ' + str(batch_size))
     legs = []
     total_legs_loaded = 0
     for index in range(1, limit + 1):
-        leg = compose_leg(leg_id=index, flight_number=index, version=1)
+        leg = compose_leg(leg_id=get_next_id(db, 'flight_leg'), flight_number=index, version=version)
         legs.append(leg)
         if len(legs) % batch_size == 0:
             total_legs_loaded += len(legs)
             insert_legs(db, legs)
             legs = []
+
+    if len(legs) > 0:
+        insert_legs(db, legs)
+        total_legs_loaded += len(legs)
     print("# of total legs inserted in db: " + str(total_legs_loaded))
 
 def insert_legs(db, legs):
     db.flight_leg.insert_many(legs)
 #    print("# of legs inserted: " + str(len(legs)))
+
+def get_next_id(db, entity):
+    next_id_record = db.counters.find_one_and_update(
+        {'_id': entity}, {'$inc': {'seq': 1}},
+        return_document=ReturnDocument.AFTER
+    )
+    if next_id_record is None:
+        db.counters.insert({'_id':entity, 'seq':1})
+        next_id_record = db.counters.find_one({'_id':entity})
+        print('version returned: ' + str(next_id_record['seq']))
+    return next_id_record['seq']
+
+
+def insert_version(db, entity, description):
+    return db.versions.insert({
+        '_id':get_next_id(db=db, entity=entity),
+        'description':description,
+        'user':'system',
+        'timestamp':datetime.now()
+    })
+
 
 
 if __name__ == '__main__':
@@ -93,8 +120,10 @@ if __name__ == '__main__':
     # client = MongoClient("localhost", 27017)
     ops_db = client.ops_db
 
+    print('inserting base version for flight leg')
+    version = insert_version(db=ops_db, entity='version',description='initial load')
     print('loading flight legs')
-    load_legs(db=ops_db, limit=1000)
+    load_legs(db=ops_db, limit=1, version=version)
 
-    print("creating index")
-    ops_db.flight_leg.create_index([('flightLegId.airlineCode', ASCENDING), ('flightLegId.departureAirport', ASCENDING)])
+    # print("creating index")
+    # ops_db.flight_leg.create_index([('flightLegId.airlineCode', ASCENDING), ('flightLegId.departureAirport', ASCENDING)])

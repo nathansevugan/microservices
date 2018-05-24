@@ -30,24 +30,32 @@ public class FlightTimes {
     public static class FlightTimesBuilder {
         private FlightTimes flightTimes;
 
+        public static FlightTimesBuilder newBuilder(){
+            return new FlightTimesBuilder();
+        }
+
         public FlightTimesBuilder() {
             flightTimes = new FlightTimes();
         }
 
-        void setScheduleDepartureTime(DateTime scheduleDepartureTime) {
+        public FlightTimesBuilder setScheduleDepartureTime(DateTime scheduleDepartureTime) {
             this.flightTimes.scheduleDepartureTime = scheduleDepartureTime;
+            return this;
         }
 
-        void setScheduleArrivalTime(DateTime scheduleArrivalTime) {
+        public FlightTimesBuilder setScheduleArrivalTime(DateTime scheduleArrivalTime) {
             this.flightTimes.scheduleArrivalTime = scheduleArrivalTime;
+            return this;
         }
 
-        void setLatestDepartureTime(DateTime latestDepartureTime) {
+        public FlightTimesBuilder setLatestDepartureTime(DateTime latestDepartureTime) {
             this.flightTimes.latestDepartureTime = latestDepartureTime;
+            return this;
         }
 
-        void setLatestArrivalTime(DateTime latestArrivalTime) {
+        public FlightTimesBuilder setLatestArrivalTime(DateTime latestArrivalTime) {
             this.flightTimes.latestArrivalTime = latestArrivalTime;
+            return this;
         }
 
         public FlightTimes build() {

@@ -1,6 +1,5 @@
 package com.sabre.as.flight.schedule.domain;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -10,8 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "flight_leg")
 public class FlightLeg {
-    @Id
-    private TechnicalId technicalId;
+    @org.springframework.data.annotation.Id
+    private Id id;
 
     @Field
     private FlightLegId flightLegId;
@@ -50,9 +49,11 @@ public class FlightLeg {
         return flightTimes;
     }
 
-    public TechnicalId getTechnicalId() {
-        return technicalId;
+    public Id getId() {
+        return id;
     }
+
+
 
     public static class FlightLegBuilder{
         private FlightLeg flightLeg;
@@ -87,8 +88,8 @@ public class FlightLeg {
             return this;
         }
 
-        public FlightLegBuilder setTechnicalId(TechnicalId technicalId){
-            this.flightLeg.technicalId = technicalId;
+        public FlightLegBuilder setId(Id id){
+            this.flightLeg.id = id;
             return this;
         }
 
