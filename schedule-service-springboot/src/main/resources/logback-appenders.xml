@@ -27,7 +27,7 @@
         <!-- [Optional] Label for Fluentd. Farther information: http://docs.fluentd.org/articles/config-file -->
         <label>follow</label>
         <!-- Host name/address and port number which Flentd placed -->
-        <remoteHost>localhost</remoteHost>
+        <remoteHost>${fluentd.remote.host}</remoteHost>
         <port>24224</port>
         <!-- Additional fields(Pairs of key: value) -->
      <!--   <additionalField>
