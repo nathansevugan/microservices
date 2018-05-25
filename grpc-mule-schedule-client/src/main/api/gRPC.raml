@@ -1,0 +1,117 @@
+#%RAML 1.0
+version: v1
+title: Shop API
+baseUri: 'https://mocksvc.mulesoft.com/mocks/fdd68498-a3fa-4a27-886d-ac8317fc10b5'
+
+/getFlightLegsByDepartureAirport:
+  post:
+    body:
+      application/json:
+        type: object
+        properties:
+              airline:
+                type: string
+                required: true
+                minLength: 2
+                maxLength: 2
+              departureAirport:
+                type: string
+                required: true
+                minLength: 3
+                maxLength: 3
+    responses:
+      '200':
+        body:
+          application/json:
+
+
+/getFlightLegById:
+  post:
+    body:
+      application/json:
+        type: object
+        properties:
+              id:
+                type: number
+                required: true
+                
+    responses:
+      '200':
+        body:
+          application/json:
+
+
+
+/updateFlightLeg:
+  post:
+    body:
+      application/json:
+        type: object
+        properties:
+          legId:
+            type: object
+            properties:
+              id:      
+                type: string
+                required: true
+              version:  
+                type : string
+                required: true
+                
+          flightLegId:
+            type: object
+            properties:
+               flightNumber:       
+                type: string
+                required: true
+               departureAirport:  
+                 type: string
+                 required: true
+               arrivalAirport:  
+                 type: string
+                 required: true
+               airlineCode: 
+                  type:  string
+                  required: true
+               flightDate:  
+                  type: string
+                  required: true
+
+          flightTimes:
+              type: object
+              properties:
+                scheduleDepartureTime:       
+                  type: string
+                  required: true
+                scheduleArrivalTime:  
+                  type: string
+                  required: true
+                latestDepartureTime:  
+                  type: string
+                  required: true
+                latestArrivalTime: 
+                  type:  string
+                  required: true
+
+          registration:
+            type: string
+            required: true
+          status:
+            type: string
+            required: true
+          serviceType:
+            type: string
+            required: true
+                            
+    responses:
+      '200':
+        body:
+          application/json:
+
+        
+/health:
+  get:
+    responses:
+      200:
+        body:
+         application/json:

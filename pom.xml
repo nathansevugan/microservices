@@ -108,6 +108,7 @@
         <module>schedule-client</module>
         <module>grpc-spring-boot-starter</module>
         <module>schedule-service-springboot</module>
+        <module>grpc-mule-schedule-client</module>
     </modules>
 
 </project>
