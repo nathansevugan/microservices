@@ -45,7 +45,6 @@ docker pull fluent/fluentd
 
 
 ## Starting fluent/fluentd
-1. Launch oracle ami from AWS Console or API
 ````
 docker run -p 24224:24224 -p 24224:24224/udp -v /tmp:/fluentd/etc -e FLUENTD_CONF=fluentd.conf fluent/fluentd
 docker start fluentd + elk
