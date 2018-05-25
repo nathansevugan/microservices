@@ -123,7 +123,7 @@ if __name__ == '__main__':
     print('inserting base version for flight leg')
     version = insert_version(db=ops_db, entity='version',description='initial load')
     print('loading flight legs')
-    load_legs(db=ops_db, limit=1, version=version)
+    load_legs(db=ops_db, limit=1000, version=version)
 
     # print("creating index")
     # ops_db.flight_leg.create_index([('flightLegId.airlineCode', ASCENDING), ('flightLegId.departureAirport', ASCENDING)])
