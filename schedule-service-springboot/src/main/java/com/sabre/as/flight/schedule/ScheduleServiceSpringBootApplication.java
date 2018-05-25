@@ -21,6 +21,7 @@ public class ScheduleServiceSpringBootApplication {
 
     public static void main(String[] args) {
 
+        logger.info("Attempting to start schedule service.....");
         SpringApplication.run(ScheduleServiceSpringBootApplication.class,args);
 
     }
