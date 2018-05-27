@@ -46,7 +46,7 @@ The example also shows how the data in mongodb is versioned and allows one to bu
 
 
 
-##Deploy components in the order listed below
+## Deploy components in the order listed below
 # Fluent/Fluentd
 Deploy fluentd from docker hub into the minishift single node cluster using the following command
 . Allow it to use the default configuration. Once we run start springboot we
@@ -144,7 +144,7 @@ we will port forward to test our deployment using schedule client
 
 
 
-##Useful OC commands
+## Useful OC commands
 
     1. oc login
     2. oc get projects
@@ -165,7 +165,7 @@ we will port forward to test our deployment using schedule client
     17. <<pod>> can be replaced with svc, route, dc, bc, is etc.
     18. oc rsh <<pod name>>
     
-##Useful docker commands
+## Useful docker commands
     1. docker ps
     2. docker images
     3. docker image rm -f <<image id>>
