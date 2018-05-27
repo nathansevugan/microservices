@@ -1,47 +1,37 @@
-FROM openshift/base-centos7
-#
-MAINTAINER ramon.resma@gmail.com
+FROM codingtony/java
+
+MAINTAINER ranganathan.sevuganchetty@sabre.com
 
 # Define environment variables.
-ENV BUILD_DATE=05252018
 ENV MULE_HOME=/opt/mule
 ENV MULE_VERSION=3.9.0
-#ENV MULE_MD5=09aa1448536c9273562eded1a9236609
 ENV TZ=America/Chicago
 
+#timezone
 RUN echo ${TZ} > /etc/timezone
 
-# we need some tools from yum
-RUN yum update -y \
-    && yum install -y java-1.8.0-openjdk-devel maven zip \
-    && yum clean all -y
+# Download Java 8
+RUN apt-get install -y software-properties-common \
+ && add-apt-repository ppa:webupd8team/java -y \
+ && apt-get update \
+ && apt-get install -y zip \
+ && apt-get install -y curl \
+ && apt-get install -y htop \
+ && apt-get install -y jq \
+ && echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections \
+ && apt-get install -y oracle-java8-installer \
+ && apt-get install oracle-java8-set-default \
+ && apt-get clean
 
-COPY mule-standalone-${MULE_VERSION}.zip /opt
-RUN cd /opt && unzip mule-standalone-${MULE_VERSION}.zip && ln -s /opt/mule-standalone-${MULE_VERSION} ${MULE_HOME}
+# Mule Community Edition installation
+RUN wget https://repository.mulesoft.org/nexus/content/repositories/releases/org/mule/distributions/mule-standalone/${MULE_VERSION}/mule-standalone-${MULE_VERSION}.tar.gz
+RUN cd /opt && tar xvzf ~/mule-standalone-${MULE_VERSION}.tar.gz
+RUN rm ~/mule-standalone-${MULE_VERSION}.tar.gz
+RUN ln -s /opt/mule-standalone-${MULE_VERSION} ${MULE_HOME}
 
-# Define mount points.
-#VOLUME ["${MULE_HOME}/logs", "${MULE_HOME}/conf", "${MULE_HOME}/apps", "${MULE_HOME}/domains"]
+COPY ./target/grpc-mule-schedule-client-1.0.0-SNAPSHOT.zip ${MULE_HOME}/apps/
 
-# Define working directory.
-WORKDIR ${MULE_HOME}
-
-#COPY ./target/arch-summit.1.0-1.0.0-SNAPSHOT-mule-application*.jar ${MULE_HOME}/apps/
-
-RUN ls ${MULE_HOME}/apps/
-
-
-# run as non-root user
-RUN chown -R 1001:0 $MULE_HOME && \
-    chmod -R g+wrx $MULE_HOME
-
-# Openshift runtime user
-USER 1001
-
-CMD [ "/opt/mule/bin/mule"]
-
-# engage
-#CMD exec $MULE_HOME/bin/mule $MULE_OPTS_APPEND
+CMD [ "/opt/mule/bin/mule" ]
 
 # Default http port
-EXPOSE 8081
-EXPOSE 8082
+EXPOSE 8085
