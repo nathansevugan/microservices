@@ -126,6 +126,23 @@ for now. This layer takes springboot grpc service host ${grpc.host} and port ${g
             2. Docker image is hosted in DockerHub
             3. Docker image is pulled from DockerHub and deployed in minishift
             
+    building docker client and deploying to docker hub
+            1. Install docker locally
+            2. CD to the folder where grpc-mule-schedule-client dockerfile exists
+           Execute commands shown below
+            1. docker image build . -t mule-schedule-client
+            2. 
+            
+## schedule-client
+Is a simple java application that allows you to test the schedule-service-spring-boot from outside the minishift cluster.
+Minishift does not expose the grpc port for external consumption. Inorder to test your spring boot schedule service
+we will port forward to test our deployment using schedule client
+
+    deployment:
+            1. oc port-forward <<pod instance id of the schedule:service>> 8080:8080
+
+
+
 
 ##Useful OC commands
 
@@ -142,6 +159,23 @@ for now. This layer takes springboot grpc service host ${grpc.host} and port ${g
     11. oc get pods
     12. oc expose svc/<<service-name>>
     13. oc get routes
+    14. oc port-forward <<pod name>> 27017:27017
+    15. oc delete all --all
+    16. oc delete pod/<<instance name>
+    17. <<pod>> can be replaced with svc, route, dc, bc, is etc.
+    18. oc rsh <<pod name>>
+    
+##Useful docker commands
+    1. docker ps
+    2. docker images
+    3. docker image rm -f <<image id>>
+    4. docker run <<image id>
+    5. docker stop <<container id>>
+    6. docker exec -it <<container id>> [/bin/sh or bash]  
+    7. docker image build . -t <<image name>>
+    
+    
+
     
     
     
