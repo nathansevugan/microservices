@@ -15,7 +15,7 @@ public class ScheduleClient {
                 .usePlaintext()
                 .build();
 
-//        readFlightLegs(channel);
+        readFlightLegs(channel);
 
         //        FlightLeg flightLeg = FlightLeg.FlightLegBuilder.newBuilder()
 //                .setId(Id.IdBuilder.newBuilder().setLegId(1).setVersion(1).build())
@@ -37,7 +37,7 @@ public class ScheduleClient {
 //                                ISODateTimeFormat.dateTimeParser().parseDateTime("2018-05-01T07:00:00-05:00"))
 //                        .build()).build();
 //        mongoTemplate.insert(flightLeg);
-        updateFlightLeg(channel);
+ //       updateFlightLeg(channel);
         channel.shutdown();
     }
 

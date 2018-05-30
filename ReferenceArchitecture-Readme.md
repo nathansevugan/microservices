@@ -122,16 +122,25 @@ for now. This layer takes springboot grpc service host ${grpc.host} and port ${g
             http://<host address>:8085/api/getFlightLegById
   
     deployment:
-            1. Dockerfile allows one to build a image with the release
-            2. Docker image is hosted in DockerHub
-            3. Docker image is pulled from DockerHub and deployed in minishift
-            
-    building docker client and deploying to docker hub
+    
+    Steps
+    1. building docker client and deploying to docker hub
             1. Install docker locally
             2. CD to the folder where grpc-mule-schedule-client dockerfile exists
-           Execute commands shown below
-            1. docker image build . -t mule-schedule-client
-            2. 
+         
+    2. Execute commands shown below to build a docker image and export the image
+            1. docker image build . -t schedule-service-mule-api
+            2. docker tag <image id> schedule-service-mule-api:<tag>
+            3. docker save schedule-service-mule-api:<tag> schedule-service-mule-api.tar
+            
+    3. Loading the tar in minishift docker registry
+           1. eval $(minishift oc-env)
+           2. eval $(minishift docker-env)
+           3. docker load < schedule-service-mule-api.tar
+            
+    4. deploying mule client in minishift    
+           oc new-app schedule-service-mule-api:v1 -e JAVA_OPTS='-M-DgrpcHost=172.30.196.90'
+           oc expose svc/schedule-service-mule-api --port=8085 
             
 ## schedule-client
 Is a simple java application that allows you to test the schedule-service-spring-boot from outside the minishift cluster.

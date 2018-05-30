@@ -21,8 +21,8 @@ import io.grpc.ManagedChannelBuilder;
 public class FlightLegs {
 
 	private static Logger logger = LoggerFactory.getLogger(FlightLegs.class);
-	private static String ipAddress = System.getProperty("grpc.host", "127.0.0.1");
-	private static int port = Integer.valueOf(System.getProperty("grpc.port", "8080"));
+	private static String ipAddress = System.getProperty("grpcHost", "127.0.0.1");
+	private static int port = Integer.valueOf(System.getProperty("grpcPort", "8080"));
 
 	public String getFlightLegsByDepartureAirport(HashMap<String, Object> payload) throws Exception {
 
