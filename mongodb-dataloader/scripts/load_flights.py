@@ -3,7 +3,7 @@
 from random import randint
 from pymongo import MongoClient, ASCENDING
 from pymongo import ReturnDocument
-
+import os
 from datetime import datetime, timedelta
 import pytz
 
@@ -111,11 +111,24 @@ def insert_version(db, entity, description):
         'timestamp':datetime.now()
     })
 
+def get_db_url():
+    url = "mongodb://"
+    db = 'ops_db'
+    hostname = 'localhost'
+    port = 27017
+    if (os.environ['MONGODB_HOSTNAME'] is not None):
+        hostname = os.environ['MONGODB_HOSTNAME']
+    if (os.environ['MONGODB_PORT'] is not None):
+        port = os.environ['MONGODB_PORT']
 
+    url = url + hostname + ":" + str(port) + "/" + db
+    print ('database url: ' + url)
+    return url
 
 if __name__ == '__main__':
     print('creating database connection')
-    client = MongoClient("mongodb://localhost:27017/ops_db")
+    client = MongoClient(get_db_url())
+    # client = MongoClient("mongodb://localhost:27017/ops_db")
     # client = MongoClient("mongodb://mongo-schedule-service.192.168.64.13.nip.io:27017/ops_db")
     # client = MongoClient("localhost", 27017)
     ops_db = client.ops_db
